@@ -17,7 +17,6 @@ class about(commands.Cog):
             color=discord.Color.blue()
         )
         embed.add_field(name="作者", value="[あいしぃー](https://me.aisii.net)", inline=True)
-        embed.add_field(name="GitHub", value="[GitHub](https://github.com/aic-6301/now-playing-misskey)", inline=True)
 
         await interaction.response.send_message(embed=embed)
 
