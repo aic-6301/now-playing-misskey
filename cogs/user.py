@@ -57,20 +57,23 @@ class register(commands.Cog):
                 auth = MiAuth
                 
                 token = auth.check()
-                if not token:
-                    await interaction.response.send_message("認証に失敗しました。もう一度やり直してください。", ephemeral=True)
-                    return
-                self.bot.db.execute(
-                    "INSERT INTO users (user, address, token) VALUES (?, ?, ?) ON CONFLICT (user) DO UPDATE SET token = ?",
-                    (interaction.user.id, instance, token, token)
-                )
-                self.bot.db.commit()
-                self.bot.user_cache[interaction.user.id] = {
-                    "address": instance,
-                    "token": token
-                }
-                await interaction.response.send_message(f"認証が完了しました！\nユーザー名: {Misskey(address=instance, i=token).i()['name']}@{instance}", ephemeral=True)
-                
+                try:
+                    if not token:
+                        await interaction.response.send_message("認証に失敗しました。もう一度やり直してください。", ephemeral=True)
+                        return
+                    self.bot.db.execute(
+                        "INSERT INTO users (user, address, token) VALUES (?, ?, ?) ON CONFLICT (user) DO UPDATE SET token = ?",
+                        (interaction.user.id, instance, token, token)
+                    )
+                    self.bot.db.commit()
+                    self.bot.user_cache[interaction.user.id] = {
+                        "address": instance,
+                        "token": token
+                    }
+                    await interaction.response.send_message(f"認証が完了しました！\nユーザー名: {Misskey(address=instance, i=token).i()['name']}@{instance}", ephemeral=True)
+                except Exception as e:
+                    print(f"Error during registration: {e}")
+                    await interaction.response.send_message("認証中にエラーが発生しました。もう一度やり直してください。", ephemeral=True)
             else:
                 await interaction.response.send_message("セッションが見つかりませんでした。もう一度やり直してください。", ephemeral=True)
 

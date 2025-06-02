@@ -23,7 +23,7 @@ class MyBot(commands.Bot):
     async def on_ready(self):
         self.db = sqlite3.connect('data/data.db')
         self.db.execute(
-            "CREATE TABLE IF NOT EXISTS users (user_id INTEGER PRIMARY KEY, address TEXT, token TEXT)"
+            "CREATE TABLE IF NOT EXISTS users (user INTEGER PRIMARY KEY, address TEXT, token TEXT)"
         )
         self.db.commit()
         for file in os.listdir("./cogs"):
